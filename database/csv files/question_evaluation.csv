@@ -1,0 +1,18 @@
+1,Year,Multiple Choice
+2,Sex,Multiple Choice
+3,Class Missed,Multiple Choice
+4,Major,Multiple Choice
+5,Expected Grade,Multiple Choice
+6,Reason Taking Course,Multiple Choice
+7,How well organized was the class? (1-10),Scale
+8,How concerned was the instructor with what students learned from the course? (1-10),Scale
+9,Were the grading criteria for the course clear? (1-10),Scale
+10,Was the instructor enthusiastic about the material? (1-10),Scale
+11,How much did the course promote your progress on acquiring factual knowledge? (1-10),Scale
+12,How much did the course promote your progress on understanding basic principles and concepts? (1-10),Scale
+13,I would recommend this course to another student. (Agree/Disagree),Agree/Disagree
+14,I would recommend this instructor to another student. (Agree/Disagree),Agree/Disagree
+15,Comment on the strengths of the instructor (Free-text),Open Ended
+16,Comment on the weaknesses of the instructor (text),Open Ended
+17,Comment on the strengths of the course (Free-text),Open Ended
+18,Comment on the weaknesses of the course (text),Open Ended

@@ -68,6 +68,47 @@ function isUserValid($userName) {
 	}
 }
 
+// TODO verifies if user took class
+function didUserTakeClass($userName) {
+	//? is more secure and better practice
+	$sql = "SELECT * from Student_Class where Sid = ?";
+
+	//Create prepare statement using the sql command
+	$stmt = self::$connection->prepare($sql);
+
+	//Binds $username to the $stmt
+	//Have to declare what the types are, so $userName is a string
+	if( !$stmt->bind_param("s", $userName) ) {
+		return false;
+	}
+
+
+	//runs the statement that you previously prepared
+	if( !$stmt->execute() ) {
+		return false;
+	}
+
+	//gets the result and stores it in $res
+	if(!($res = $stmt -> get_result())) {
+		return false;
+	}
+
+	//$res->fetch_all returns an array 
+	//gets the size of that array
+	$res_size = sizeof($res->fetch_all());
+
+	//closes the statement after done using it
+	$stmt->close();
+
+	//checks to see if the query returns a result greater than 0
+	//means that the username is valid
+	if($res_size > 0){
+		return true;
+	} else {
+		return false;
+	}
+}
+
 //TODO select statement that verifies user can provide class evaluation
 // User can only provide one class evaluation
 function isUserEvaluationValid($userName, $evalId) {

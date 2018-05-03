@@ -1,0 +1,83 @@
+
+//TODO select statement that verifies user can provide class evaluation
+// User can only provide one class evaluation
+function isUserEvaluationValid($userName, $evalId) {
+
+}
+// this will be empty if they haven't already submitted
+select * from Question where Sid = ? and Cnumber = $Cnumber;
+
+if empty
+	getEvaluationQuestion()
+else
+	echo("Your evaluation for this class is already in our records")
+
+
+
+
+
+//TODO select statement that loads the evaluation questions for each course
+function getEvaluationQuestion($course) {
+
+// $NumQ is total number of questions
+$NumQ = select count(*) from Evaluation_Question;
+// $prevq initialized at 1 everytime (we iterate through all the questions everytime, shouldn't be an issue 
+// for such few questions)
+$prevq = 1
+Loop {
+
+// Gone through all the questions
+if ($prevq > $NumQ)
+	echo "No More Questions."
+	break
+
+//if none of the previous people in the class answered, we assume the class doesn't ask the question
+select distinct Answer from Question where Qnumber = $prevq and Cnumber = $Cnumber;
+if only one row exists, and that row is ''
+	if ($prevq + 1 > $NumQ)
+		echo "No More Questions."
+		break
+	else
+		$prevq = $prevq + 1
+		restart loop
+else
+//if they have already answered it (shouldn't have issue with blanks because don't allow second time)
+select Answer from Question where Sid = $Sid and Qnumber = $prevq and Cnumber = $Cnumber;
+if (empty)
+	display question
+	insertEvaluationAnswer($prevq)
+else
+	$prevq = $prevq + 1
+	restart loop
+}
+
+
+
+
+//TODO insert evaluation answer
+function insertEvaluationAnswer($qnumber) {
+
+}
+$ans = their answer
+insert into Question values ($Sid,$Cnumber,$Qnumber,$ans);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
