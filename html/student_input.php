@@ -24,6 +24,11 @@ include '../database/database.php';
 	}?>
 <?php else : 
 	echo $userName . " is a valid user name";
+	$students_class_rows = $foo->getUsersClasses($userName);	
+	echo $students_class_rows;
+	foreach ($row as $students_class_rows) {
+		echo $row;
+	}
 ?>
 <?php endif; ?>
 </body>

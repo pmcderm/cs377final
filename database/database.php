@@ -68,6 +68,28 @@ function isUserValid($userName) {
 	}
 }
 
+//TODO get users classes
+function getUsersClasses($userName) {
+	$sql = "SELECT * from Student_Class where Sid = ?";
+
+	$stmt = self::$connection->prepare($sql);
+
+	if( !$stmt->bind_param("s", $userName) ) {
+		return false;
+	}
+
+	if( !$stmt->execute() ) {
+		return false;
+	}
+
+	if(!($res = $stmt -> get_result())) {
+		return false;
+	}
+
+	$stmt->close();
+	return $res->fetch_all();
+}
+
 // TODO verifies if user took class
 function didUserTakeClass($userName, $cNumber) {
 	$sql = "SELECT * from Student_Class where Sid = ? and Cnumber = ?";
@@ -99,7 +121,7 @@ function didUserTakeClass($userName, $cNumber) {
 
 //TODO select statement that verifies user can provide class evaluation
 // User can only provide one class evaluation
-function isUserEvaluationValid($userName, $evalId) {
+function isUserEvaluationValid($userName, $evaluationAnswers) {
 
 }
 
