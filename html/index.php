@@ -1,3 +1,7 @@
+<html>
+<body>
 <?php
-echo "hello";
+	include '../components/header.php';
 ?>
+</body>
+</html>
