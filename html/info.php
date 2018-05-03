@@ -8,7 +8,6 @@ include '../database/database.php';
 	if (!empty($_GET['userName'])) {
 		$userName =  $_GET['userName'];
 		$isUserValid = $foo->isUserValid($userName);
-		echo $isUserValid;
 	}
 ?>
 <?php if (empty($_GET['userName']) || !$isUserValid) : ?>

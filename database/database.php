@@ -29,19 +29,41 @@ function getInstance() {
 
 //TODO select statement that verifies user exists
 function isUserValid($userName) {
+	//? is more secure and better practice
 	$sql = "SELECT * from Student where Sid = ?";
+
+	//Create prepare statement using the sql command
 	$stmt = self::$connection->prepare($sql);
-	$bool = $stmt->bind_param("s", $userName);
-	if(!$bool) {
+
+	//Binds $username to the $stmt
+	//Have to declare what the types are, so $userName is a string
+	if( !$stmt->bind_param("s", $userName) ) {
 		return false;
 	}
-	$result = $stmt->execute();
+
+
+	//runs the statement that you previously prepared
+	if( !$stmt->execute() ) {
+		return false;
+	}
+
+	//gets the result and stores it in $res
+	if(!($res = $stmt -> get_result())) {
+		return false;
+	}
+
+	//$res->fetch_all returns an array 
+	//gets the size of that array
+	$res_size = sizeof($res->fetch_all());
+
+	//closes the statement after done using it
 	$stmt->close();
-	if($result['num_rows'] > 0){
-		echo "It is true";
+
+	//checks to see if the query returns a result greater than 0
+	//means that the username is valid
+	if($res_size > 0){
 		return true;
 	} else {
-		echo "It is false";
 		return false;
 	}
 }
@@ -61,7 +83,6 @@ function getEvaluationQuestion($course) {
 function insertEvaluationAnswer() {
 
 }
-
 
 }
 ?> 
