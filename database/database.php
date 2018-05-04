@@ -70,7 +70,7 @@ function isUserValid($userName) {
 
 //TODO get users classes
 function getUsersClasses($userName) {
-	$sql = "SELECT Cname from Student_Class,Class where Sid = ? and Class.Cnumber = Student_Class.Cnumber";
+	$sql = "SELECT Cname, Class.Cnumber from Student_Class,Class where Sid = ? and Class.Cnumber = Student_Class.Cnumber";
 
 	$stmt = self::$connection->prepare($sql);
 
@@ -149,6 +149,7 @@ function isUserEvaluationValid($userName, $cNumber) {
 	}
 
 }
+
 
 //if no one from the class has answered the question, you can assume it is not on the eval
 function isQuestionInCourseEval($fname,$lname, $cNumber) {
@@ -294,8 +295,27 @@ function questionType($qNumber) {
 }
 
 //finds numerator of Agree Disagree task in student view
-function agreeDisagreeNumerator($qNumber) {
+function agreeDisagreeNumerator($qNumber,$cName,$fname,$lname) {
+	$sql = "SELECT count(Answer) from Question, Class, Instructor 
+where Instructor.Instr_id = Class.Instr_id and Question.Cnumber = Class.Cnumber and Qnumber = ? and Cname = ? and Fname = ? and Lname = ? and Question.Answer != '' and Question.Answer in ("Agree","Strongly Agree")";
 
+	$stmt = self::$connection->prepare($sql);
+
+	if( !$stmt->bind_param("s", $qNumber,$cName,$fname,$lname) ) {
+		return false;
+	}
+
+	if( !$stmt->execute() ) {
+		return false;
+	}
+
+	if(!($res = $stmt -> get_result())) {
+		return false;
+	}
+
+	$stmt->close();
+	$array = $res->fetch_all();
+	return $array[0];
 }
 
 // Instructor View
