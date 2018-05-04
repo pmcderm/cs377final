@@ -7,7 +7,7 @@ include '../database/database.php';
 	$conn = $foo->getInstance();
 	$isUserValid = false;
 	$checkedUserNameOnce = false;
-	if (!empty($_GET['userName'])) {
+	if (!$isUserValid && !empty($_GET['userName'])) {
 		$userName =  $_GET['userName'];
 		$isUserValid = $foo->isUserValid($userName);
 		$checkedUserNameOnce = true;
@@ -25,11 +25,14 @@ include '../database/database.php';
 <?php else : 
 	echo $userName . " is a valid user name";
 	$students_class_rows = $foo->getUsersClasses($userName);	
-	echo $students_class_rows;
-	foreach ($row as $students_class_rows) {
-		echo $row;
-	}
 ?>
+<?php endif; ?>
+<?php if(!isset($_GET['studentClass']) && isset($_GET['userName']) && sizeof($students_class_rows) > 0) : ?>
+	<form action="student_input.php" method="get"> 
+	<?php foreach ($students_class_rows as $i =>$row): ?> 
+		<input type="hidden" name="userName" value="<?php echo $userName?>"/>
+		<button name="studentClass" value="<?php echo $row[$i];?>"><?php echo $row[$i] ?></button>
+	<?php endforeach;?>
 <?php endif; ?>
 </body>
 </html>

@@ -70,7 +70,7 @@ function isUserValid($userName) {
 
 //TODO get users classes
 function getUsersClasses($userName) {
-	$sql = "SELECT Cname from Student_Class,Class where Sid = ? and Class.Cnumber = Student_Class.Cnumber";
+	$sql = "SELECT Cname, Class.Cnumber from Student_Class,Class where Sid = ? and Class.Cnumber = Student_Class.Cnumber";
 
 	$stmt = self::$connection->prepare($sql);
 
