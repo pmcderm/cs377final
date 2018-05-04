@@ -1,0 +1,76 @@
+student view:
+
+Open to all
+
+First Menu you enter course name (stored as cname)
+
+then you get a menu of all professor's who have taught it (select fname, lname from Instructor where Cname = $cname) and you click on the one you want (storing instructor first name as $fname, and last name as $lname)
+
+// iterates through all the questions and if they are asked by the class, gives the statistic
+$NumQuestions = select count(*) from Evaluation_Question;
+$qnumber = 1
+While ($qnumber <= $NumQuestions) {
+	
+// Check of the question has any answers for the course name and instructor
+select count(Answer) from Question, Class, Instructor 
+where Instructor.Instrid = Class.Instrid and Question.Cnumber = Class.Cnumber and Qnumber = $qnumber and Class.Cname = $cname and Fname = $fname and Lname = $lname and Question.Answer != '';
+
+//this is the question in words for you to display later
+$content = (select Qcontent from Question_Evaluation where Qnumber = $qnumber;)
+
+// Finds the Question Type (need this because the types are calculated differently)
+select Qtype from Question_Evaluation Qnumber = $qnumber;
+
+if type is "Agree/Disagree"
+#numerator
+select count(Answer) from Question, Class, Instructor 
+where Instructor.Instr_id = Class.Instr_id and Question.Cnumber = Class.Cnumber and Qnumber = $qnumber and Cname = $cname and Fname = $fname and Lname = $lname and Question.Answer != '' and Question.Answer in ("Agree","Strongly Agree");
+
+
+# denominator
+select count(*) from Question, Class, Instructor 
+where Instructor.Instr_id = Class.Instr_id and Question.Cnumber = Class.Cnumber and Answer != '' and Qnumber = $qnumber and Cname = $cname and Fname = $fname and Lname = $lname;
+
+display $content
+display numerator/denominator * 100% "responded with Agree or Strongly Agree."
+
+
+if top query is "Scale"
+// show the actual question before you give the statistic
+$content
+
+// query for average, 
+"The average rating was"
+Select Avg(Cast(Question.Answer as Unsigned))
+From Question, Class, Instructor
+where Instructor.Instr_id = Class.Instr_id and Question.Cnumber = Class.Cnumber and Question.Answer != '' and Qnumber = $qnumber and Cname = $cname and Fname = $fname and Lname = $lname;
+"out of 10"
+
+if top query is "Multiple Choice"
+
+#denominator
+$denom = select count(*) from Question, Class, Instructor
+where Instructor.Instr_id = Class.Instr_id and Question.Cnumber = Class.Cnumber and Answer !='' and Qnumber = $qnumber and Cname = $cname and Fname = $fname and Lname = $lname;
+
+
+
+// make a single column table of all the distinct answers (won't be in order) and put them into an array of length $size
+$size = select distinct Answers from Question where Qnumber = $qnumber;
+-> array[$size]
+
+// display the question name before you show the statistics
+display $content
+
+// iterate through the array for each numerator
+$position = 0
+while (position <= $size - 1) {
+	#numerator
+	$num = (select count(Answers) from Question where Qnumber = $qnumber and Answer = array[$position])
+	display array[$position]
+	under it display $num/$denom * 100%
+}
+
+
+
+
+}
