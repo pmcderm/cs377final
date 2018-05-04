@@ -121,12 +121,12 @@ function didUserTakeClass($userName, $cNumber) {
 
 //TODO select statement that verifies user can provide class evaluation; have they already answered
 // User can only provide one class evaluation
-function isUserEvaluationValid($userName, $evaluationAnswers) {
+function isUserEvaluationValid($userName, $cNumber) {
 	$sql = "SELECT Answer from Question where Sid = ? and Cnumber = ?";
 
 	$stmt = self::$connection->prepare($sql);
 
-	if( !$stmt->bind_param("ss", $userName, $cNumber) ) {
+	if( !$stmt->bind_param("ss", $userName, $cName) ) {
 		return false;
 	}
 
@@ -151,12 +151,12 @@ function isUserEvaluationValid($userName, $evaluationAnswers) {
 }
 
 //if no one from the class has answered the question, you can assume it is not on the eval
-function isQuestionInCourseEval($fname,$lname, $cName) {
-	$sql = "SELECT distinct Answer from Class,Question where Class.Cnumber = Question.Cnumber and Fname = $fname and Lname = $lname and Cname = ?";
+function isQuestionInCourseEval($fname,$lname, $cNumber) {
+	$sql = "SELECT distinct Answer from Class,Question where Class.Cnumber = Question.Cnumber and Fname = ? and Lname = ? and Cnumber = ?";
 
 	$stmt = self::$connection->prepare($sql);
 
-	if( !$stmt->bind_param("ss", $userName, $cNumber) ) {
+	if( !$stmt->bind_param("ss", $fname, $lname, $cNumber) ) {
 		return false;
 	}
 
@@ -181,8 +181,8 @@ function isQuestionInCourseEval($fname,$lname, $cName) {
 }
 
 //TODO converts course name to number
-// returns a 1 by 1 array with an integer, but I want to return just the integer
-function courseNameToNumber($course) {
+// returns a 1 by 1 array with the course number integer, but I want to return just the integer
+/*function courseNameToNumber($course) {
 	$sql = "SELECT distinct Cnumber from Class where Cname = ?";
 
 	$stmt = self::$connection->prepare($sql);
@@ -201,17 +201,17 @@ function courseNameToNumber($course) {
 
 	$stmt->close();
 	return $res->fetch_all();
-}
+}*/
 
 
 //TODO select statement that loads the evaluation questions for each course
-// returns a 1 by 1 array with the text of the question, but I wan't just the text of the question
+// returns an array with all the questions for a course
 function getEvaluationQuestion($courseNumber) {
 	$sql = "SELECT Qcontent from Question_Evaluation,Question where Question_Evaluation.Qnumber = Question.Qnumber and Cnumber = ?";
 
 	$stmt = self::$connection->prepare($sql);
 
-	if( !$stmt->bind_param("s", $userName) ) {
+	if( !$stmt->bind_param("s", $courseNumber) ) {
 		return false;
 	}
 
@@ -230,9 +230,13 @@ function getEvaluationQuestion($courseNumber) {
 //TODO insert evaluation answer
 function insertEvaluationAnswer($studentId,$classId,$questionNum,$ans) {
 $sql = "INSERT INTO Question
-VALUES ($studentId, $classId,$questionNum,$ans) ";
+VALUES (?, ?, ?, ?) ";
 
 $stmt = self::$connection->prepare($sql);
+
+if( !$stmt->bind_param("s", $studentId, $classId, $questionNum, $ans) ) {
+		return false;
+	}
 
 if ($stmt->execute()) {
    	echo "Submitted!";
@@ -241,7 +245,30 @@ if ($stmt->execute()) {
 }
 }
 
+
 //Student View
+
+// array of arrays with professor names
+function professorsForCourse($cName) {
+	$sql = "SELECT Fname,Lname from Class,Instructor where Instructor.Instr_id=Class.Instr_id and Cname = ?";
+
+	$stmt = self::$connection->prepare($sql);
+
+	if( !$stmt->bind_param("s", $userName) ) {
+		return false;
+	}
+
+	if( !$stmt->execute() ) {
+		return false;
+	}
+
+	if(!($res = $stmt -> get_result())) {
+		return false;
+	}
+
+	$stmt->close();
+	return $res->fetch_all();
+}
 
 //Find type of question given Question number
 //Return 1 by 1 array with question type
@@ -267,9 +294,11 @@ function questionType($qNumber) {
 }
 
 //finds numerator of Agree Disagree task in student view
-function agreeDisagreeNumerator($Qnumber) {
+function agreeDisagreeNumerator($qNumber) {
 
 }
+
+// Instructor View
 
 // finds median of unordered varchar array
 function medianVarChar($array){
